@@ -1,35 +1,30 @@
-import { MongoClient } from "mongodb";
+// FILE: src/app/api/verify/route.js
 
-const client = new MongoClient(process.env.MONGODB_URI);
-const clientPromise = client.connect();
+import { NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb";
 
-export async function GET(req) {
-  const { searchParams } = new URL(req.url);
-  const token = searchParams.get("token");
+export async function POST(req) {
+  const { token } = await req.json();
 
   if (!token) {
-    return Response.json({ error: "Missing token" }, { status: 400 });
+    return NextResponse.json({ error: "Token is required" }, { status: 400 });
   }
 
   const db = (await clientPromise).db();
+
   const user = await db.collection("users").findOne({ verifyToken: token });
 
-  if (!user || user.verifyTokenExpires < new Date()) {
-    return Response.json(
-      { error: "Invalid or expired token" },
-      { status: 400 },
-    );
+  if (!user) {
+    return NextResponse.json({ error: "Invalid Token" }, { status: 400 });
   }
 
   await db.collection("users").updateOne(
     { _id: user._id },
     {
       $set: { emailVerified: new Date() },
-      $unset: { verifyToken: "", verifyTokenExpires: "" },
+      $unset: { verifyToken: "" },
     },
   );
 
-  return Response.redirect(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login?verified=true`,
-  );
+  return NextResponse.json({ success: true });
 }

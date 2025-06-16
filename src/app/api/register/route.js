@@ -1,16 +1,15 @@
+// FILE: src/app/api/register/route.js
+
 import { hash } from "bcrypt";
-import { MongoClient } from "mongodb";
 import crypto from "node:crypto";
 import { sendVerificationEmail } from "@/lib/mailer";
-
-const client = new MongoClient(process.env.MONGODB_URI);
-const clientPromise = client.connect();
+import clientPromise from "@/lib/mongodb";
 
 export async function POST(req) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, username, gender, email, password } = await req.json();
 
-    if (!name || !email || !password) {
+    if (!email || !password) {
       return Response.json(
         { error: "All fields are required" },
         { status: 400 },
@@ -35,11 +34,12 @@ export async function POST(req) {
     // Insert new user
     await users.insertOne({
       name,
+      username,
+      gender,
       email,
       hashedPassword,
       emailVerified: null,
       verifyToken: token,
-      verifyTokenExpires: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hours
       createdAt: new Date(),
     });
 

@@ -25,14 +25,14 @@ const Header = () => {
     signOut({ callbackUrl: "/auth/login" });
   };
 
-  console.log(session);
+  // console.log(session);
 
   if (status === "loading") {
     return <Loading />;
   }
 
   return (
-    <Navbar maxWidth="full" isBordered>
+    <Navbar maxWidth="full" className="z-50" isBordered>
       <NavbarContent justify="start">
         <NavbarBrand className="mr-4">
           <h1
