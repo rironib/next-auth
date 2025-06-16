@@ -1,56 +1,90 @@
 "use client";
 
-import { Alert, Button, Spinner } from "@heroui/react";
-import { signIn, useSession } from "next-auth/react";
-import { redirect, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
+import { Button, Divider, Input, Spacer } from "@heroui/react";
 
 export default function LoginPage() {
-  const { data: session, status } = useSession();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const [errorMsg, setErrorMsg] = useState("");
-  const error = searchParams.get("error");
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-  useEffect(() => {
-    if (error) {
-      switch (error) {
-        case "OAuthAccountNotLinked":
-          setErrorMsg("This account is already linked with another provider.");
-          break;
-        case "AccessDenied":
-          setErrorMsg("Access denied. Please use an allowed account.");
-          break;
-        default:
-          setErrorMsg("Login failed. Try again.");
-      }
-    }
-  }, [error]);
-
-  if (status === "loading") return <Spinner />;
-
-  const handleGoogleLogin = () => {
-    signIn("google", {
-      callbackUrl,
-      prompt: "select_account",
-    });
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  if (session) return redirect("/dashboard");
+  const handleLogin = async () => {
+    setLoading(true);
+    const res = await signIn("credentials", {
+      ...form,
+      redirect: false,
+    });
+
+    if (res.error) {
+      toast.error(res.error);
+    } else {
+      toast.success("Logged in!");
+      router.push("/");
+    }
+    setLoading(false);
+  };
+
+  const handleGoogle = () => {
+    signIn("google", { callbackUrl: "/" });
+  };
+
+  const handleMagic = async () => {
+    const res = await signIn("email", {
+      email: form.email,
+      redirect: false,
+    });
+
+    if (res?.error) {
+      toast.error(res.error);
+    } else {
+      toast.success("Magic link sent. Check your inbox.");
+    }
+  };
 
   return (
-    <main className="flex flex-col items-center justify-center px-4 text-center">
-      {errorMsg && (
-        <div className="mb-6 w-full max-w-md">
-          <Alert color="danger" description={errorMsg} />
-        </div>
-      )}
+    <div className="mx-auto mt-20 max-w-md space-y-4">
+      <h1 className="text-2xl font-bold">Login</h1>
 
-      <div className="flex justify-center gap-6">
-        <Button size="lg" color="primary" onPress={handleGoogleLogin}>
-          Sign in with Google
-        </Button>
-      </div>
-    </main>
+      <Input
+        label="Email"
+        name="email"
+        type="email"
+        value={form.email}
+        onChange={handleChange}
+        required
+      />
+      <Input
+        label="Password"
+        name="password"
+        type="password"
+        value={form.password}
+        onChange={handleChange}
+      />
+      <Spacer y={1} />
+      <Button
+        onClick={handleLogin}
+        isLoading={loading}
+        fullWidth
+        color="primary"
+      >
+        Sign in with Credentials
+      </Button>
+
+      <Divider className="my-4" />
+      <Button onClick={handleMagic} fullWidth color="secondary" variant="flat">
+        Send Magic Link
+      </Button>
+      <Button onClick={handleGoogle} fullWidth color="danger" variant="flat">
+        Sign in with Google
+      </Button>
+    </div>
   );
 }

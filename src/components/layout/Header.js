@@ -103,13 +103,22 @@ const Header = () => {
             </DropdownMenu>
           </Dropdown>
         ) : (
-          <Link
-            href="/auth/login"
-            color="secondary"
-            className="rounded border border-secondary-500 bg-default-100 px-3 py-1.5"
-          >
-            Login/Register
-          </Link>
+          <>
+            <Link
+              href="/auth/login"
+              color="primary"
+              className="rounded border border-primary-500 bg-default-100 px-3 py-1.5"
+            >
+              Login
+            </Link>
+            <Link
+              href="/auth/register"
+              color="secondary"
+              className="rounded border border-secondary-500 bg-default-100 px-3 py-1.5"
+            >
+              Register
+            </Link>
+          </>
         )}
       </NavbarContent>
     </Navbar>
