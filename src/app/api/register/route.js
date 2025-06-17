@@ -16,13 +16,35 @@ export async function POST(req) {
       );
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = username.trim().toLowerCase();
+
     const db = (await clientPromise).db();
     const users = db.collection("users");
 
     // Check if user already exists
-    const existing = await users.findOne({ email });
-    if (existing) {
-      return Response.json({ error: "Email already in use" }, { status: 409 });
+    const existingUser = await users.findOne({
+      $or: [
+        { email: { $regex: `^${normalizedEmail}$`, $options: "i" } },
+        { username: { $regex: `^${normalizedUsername}$`, $options: "i" } },
+      ],
+    });
+    if (existingUser) {
+      let message = "An account with the provided credentials already exists.";
+
+      if (
+        existingUser.email.toLowerCase() === normalizedEmail &&
+        existingUser.username.toLowerCase() === normalizedUsername
+      ) {
+        message =
+          "Both the email address and username are already associated with existing accounts.";
+      } else if (existingUser.email.toLowerCase() === normalizedEmail) {
+        message = "The email address you entered is already registered.";
+      } else if (existingUser.username.toLowerCase() === normalizedUsername) {
+        message = "The username you selected is already taken.";
+      }
+
+      return Response.json({ error: message }, { status: 409 });
     }
 
     // Hash password
@@ -34,10 +56,11 @@ export async function POST(req) {
     // Insert new user
     await users.insertOne({
       name,
-      username,
+      username: normalizedUsername,
       gender,
-      email,
-      hashedPassword,
+      email: normalizedEmail,
+      password: hashedPassword,
+      role: "user",
       emailVerified: null,
       verifyToken: token,
       createdAt: new Date(),

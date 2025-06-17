@@ -2,7 +2,7 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = process.env.RESEND_SENDER_EMAIL;
+const FROM_EMAIL = process.env.EMAIL_FROM;
 
 const generateEmailHTML = (heading, message, buttonText, url) => `
   <div style="font-family: Arial, sans-serif; padding: 20px;">

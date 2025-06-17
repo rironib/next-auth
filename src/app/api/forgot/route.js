@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { sendPasswordResetEmail } from "@/lib/mailer";
+import crypto from "node:crypto";
 
 export async function POST(req) {
   const { email } = await req.json();

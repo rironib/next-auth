@@ -34,6 +34,50 @@ pnpm deploy
 
 ---
 
+## Folder Structure
+
+```
+src/
+├── app/
+│ ├── api/
+│ │ ├── auth/
+│ │ │ └── [...nextauth]/route.js # NextAuth.js handler
+│ │ ├── register/route.js # User registration
+│ │ ├── verify/route.js # Email verification
+│ │ ├── forgot/route.js # Send password reset email
+│ │ ├── reset/route.js # Handle password reset
+│ ├── auth/
+│ │ ├── login/page.js # Login UI
+│ │ ├── register/page.js # Registration UI
+│ │ ├── verify/page.js # UI for token-based verification
+│ │ ├── forgot/page.js # Forgot password UI
+│ │ └── reset/page.js # Reset password UI
+│ ├── dashboard/page.js # Protected route (post-login)
+│ ├── favico.ico
+│ ├── globals.css
+│ ├── layout.js
+│ ├── page.js
+│ └── provider.js
+├── components/
+│ ├── layout/
+│ │ └── Header.js # Navbar/Header
+│ ├── AuthProvider.js # NextAuth session provider
+│ ├── Loading.js
+│ └── ThemeSwitcher.js
+├── config/
+│ ├── fonts.js
+│ ├── nextAuth.js # NextAuth config (Google + Credentials)
+│ └── site.js
+├── lib/
+│ ├── mailer.js # Resend-based email functions
+│ └── mongodb.js # MongoDB connection (native driver)
+├── middleware.js # Protect routes using NextAuth
+.env.example
+README.md
+
+```
+
+
 ## 📚 Included Libraries
 
 - 🔗 [Next.js 15.3.2](https://nextjs.org/docs/getting-started) – React framework for production  

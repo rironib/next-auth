@@ -112,13 +112,14 @@ export default function LoginPage() {
             isClearable
             name="email"
             size="lg"
-            label="Email"
+            label="Username or Email"
             placeholder="Enter your email"
-            type="email"
+            type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input
+            isRequired
             name="password"
             size="lg"
             label="Password"

@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import {
   Alert,
   Button,
@@ -11,9 +14,6 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 
 export default function RegisterPage() {
   const [isVisible, setIsVisible] = useState(false);
