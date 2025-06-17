@@ -1,23 +1,57 @@
-// FILE: src/app/api/forgot/route.js
-
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { sendPasswordResetEmail } from "@/lib/mailer";
 import crypto from "node:crypto";
 
 export async function POST(req) {
-  const { email } = await req.json();
-  if (!email)
-    return NextResponse.json({ error: "Email is required" }, { status: 400 });
+  const { email, token } = await req.json();
+
+  if (!email || !token) {
+    return NextResponse.json(
+      { error: "Email and captcha token are required." },
+      { status: 400 },
+    );
+  }
+
+  // 🔐 Verify reCAPTCHA token
+  const captchaRes = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: process.env.RECAPTCHA_SECRET_KEY,
+        response: token,
+      }),
+    },
+  );
+
+  const captchaData = await captchaRes.json();
+  if (!captchaData.success) {
+    return NextResponse.json(
+      { error: "Captcha verification failed. Try again." },
+      { status: 403 },
+    );
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
 
   const db = (await clientPromise).db();
-  const user = await db.collection("users").findOne({ email });
-  if (!user)
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  const user = await db
+    .collection("users")
+    .findOne({ email: { $regex: `^${normalizedEmail}$`, $options: "i" } });
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "No account is associated with this email." },
+      { status: 404 },
+    );
+  }
 
   const lastSent = user.resetLastSent ? new Date(user.resetLastSent) : null;
   const now = new Date();
 
+  // 30-day cooldown on reset requests
   if (lastSent && now - lastSent < 30 * 24 * 60 * 60 * 1000) {
     return NextResponse.json({
       message:
@@ -25,17 +59,22 @@ export async function POST(req) {
     });
   }
 
-  // Generate a secure email verification token
-  const token = crypto.randomBytes(32).toString("hex");
+  // Generate reset token
+  const resetToken = crypto.randomBytes(32).toString("hex");
 
-  await sendPasswordResetEmail(email, token);
+  // Send reset email
+  await sendPasswordResetEmail(email, resetToken);
 
-  await db
-    .collection("users")
-    .updateOne(
-      { _id: user._id },
-      { $set: { resetToken: token, resetLastSent: now } },
-    );
+  // Update user with new token and timestamp
+  await db.collection("users").updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        resetToken,
+        resetLastSent: now,
+      },
+    },
+  );
 
-  return NextResponse.json({ message: "Password reset email sent" });
+  return NextResponse.json({ message: "Password reset email sent." });
 }
