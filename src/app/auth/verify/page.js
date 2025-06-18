@@ -1,4 +1,5 @@
 // FILE: src/app/auth/verify/page.js
+
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";

@@ -26,7 +26,6 @@ export default function RootLayout({ children }) {
             <main className="mx-auto w-11/12 max-w-screen-xl flex-grow px-4 py-16 sm:px-6 lg:px-8">
               {children}
             </main>
-            {/*<Footer />*/}
           </div>
         </Provider>
         <Toaster />

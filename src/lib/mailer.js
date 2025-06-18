@@ -5,14 +5,52 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM;
 
 const generateEmailHTML = (heading, message, buttonText, url) => `
-  <div style="font-family: Arial, sans-serif; padding: 20px;">
-    <h2>${heading}</h2>
-    <p>${message}</p>
-    <a href="${url}" style="display:inline-block; margin-top:15px; padding:10px 20px; background-color:#0070f3; color:#fff; text-decoration:none; border-radius:5px;">
-      ${buttonText}
-    </a>
-    <p style="margin-top:20px; color:#666; font-size:12px;">If you didn’t request this, you can safely ignore this email.</p>
-  </div>
+  <!DOCTYPE html>
+<html lang="en">
+<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f7f8fc;">
+<section style="text-align: center; width:100%; padding:24px 0; background-color:#f7f8fc;">
+    <div style="background-color:#5c4fff; padding:24px 32px; border-top-left-radius:12px; border-top-right-radius:12px; color:#ffffff;">
+        <h1 style="padding-left:12px; font-weight:bold; font-size:24px;">
+            SiteLike
+        </h1>
+    </div>
+
+    <h2 style="padding:40px 32px 24px; font-size:28px; font-weight:600; color:#2c2e3e;">
+        ${heading}
+    </h2>
+
+    <p style="padding:0 32px 40px; font-size:16px; line-height:24px; color:#4a4d63;">
+        ${message}
+    </p>
+
+    <div style="padding:0 32px 40px;">
+        <a href="${url}" target="_blank"
+           style="background-color:#5c4fff; color:#ffffff; text-decoration:none; font-weight:600; font-size:16px; padding:14px 28px; border-radius:6px; display:inline-block;">
+            ${buttonText}
+        </a>
+    </div>
+
+    <p style="padding:0 32px 40px; font-size:16px; line-height:24px; color:#4a4d63;">
+        Or copy this link and paste in your web browser
+    </p>
+    <p style="padding:0 32px 40px;">
+        <a href="${url}">
+            ${url}
+        </a>
+    </p>
+
+    <p style="padding:0 32px 40px; font-size:14px; line-height:24px; color:#8e91a4; font-style: italic;">
+        If you did not request this, you can safely ignore this email.
+    </p>
+
+    <div style="font-size:14px; color:#4a4d63; padding:16px 0 32px;">
+        <p style="text-align:center;">
+            &copy; <b>SiteLike</b> - All rights reserved.
+        </p>
+    </div>
+</section>
+</body>
+</html>
 `;
 
 export async function sendVerificationEmail(email, token) {
