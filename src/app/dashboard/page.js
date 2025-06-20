@@ -1,4 +1,5 @@
 "use client";
+
 import { signOut, useSession } from "next-auth/react";
 import { Button, Card, Spinner } from "@heroui/react";
 import { redirect } from "next/navigation";
