@@ -3,7 +3,6 @@ import Header from "@/components/layout/Header";
 import { poppins } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: {
@@ -21,14 +20,13 @@ export default function RootLayout({ children }) {
     <html lang="en" className={poppins.className} suppressHydrationWarning>
       <body>
         <Provider>
-          <div className="flex h-screen flex-col justify-between">
+          <div className="flex h-[100dvh] flex-col justify-between">
             <Header />
-            <main className="mx-auto w-11/12 max-w-screen-xl flex-grow px-4 py-16 sm:px-6 lg:px-8">
+            <main className="mx-auto w-full max-w-screen-xl flex-grow px-2 py-4 sm:px-4 lg:px-6 lg:py-8 xl:px-0">
               {children}
             </main>
           </div>
         </Provider>
-        <Toaster />
       </body>
     </html>
   );

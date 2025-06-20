@@ -7,7 +7,10 @@ export async function POST(req) {
   const { token } = await req.json();
 
   if (!token) {
-    return NextResponse.json({ error: "Token is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Verification token is required." },
+      { status: 400 },
+    );
   }
 
   const db = (await clientPromise).db();
@@ -15,7 +18,13 @@ export async function POST(req) {
   const user = await db.collection("users").findOne({ verifyToken: token });
 
   if (!user) {
-    return NextResponse.json({ error: "Invalid Token" }, { status: 400 });
+    return NextResponse.json(
+      {
+        error:
+          "The provided verification token is invalid or has been expired.",
+      },
+      { status: 400 },
+    );
   }
 
   await db.collection("users").updateOne(

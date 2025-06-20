@@ -1,48 +1,48 @@
 "use client";
 
-import { Button, Form, Input, Link } from "@heroui/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { Alert, Button, Input, Link } from "@heroui/react";
 import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import Turnstile from "react-turnstile";
 import { toast } from "@/components/Toast";
 
-export default function RegisterPage() {
+export default function ResetClient() {
   const router = useRouter();
+  const params = useSearchParams();
+  const token = params.get("token");
+  const [isVisible, setIsVisible] = useState(false);
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
 
-  const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleSubmit = async (e) => {
+  const handleReset = async (e) => {
     e.preventDefault();
-    const formData = Object.fromEntries(new FormData(e.currentTarget));
-    formData.captchaToken = captchaToken;
     setLoading(true);
     try {
-      const res = await fetch("/api/register", {
+      const res = await fetch("/api/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ token, newPassword: password, captchaToken }),
       });
       const data = await res.json();
       if (!res.ok) {
         toast({
           description:
             data?.error ||
-            "An error occurred while registration. Please try again.",
+            "An error occurred while resetting your password. Please try again.",
           color: "danger",
         });
       } else {
         router.push("/auth/login");
         toast({
-          description:
-            "Registration successful. Check your email for verification",
+          description: "Your password has been reset successfully.",
           color: "success",
         });
       }
-    } catch (err) {
+    } catch {
       toast({
         description: "Network error. Please try again.",
         color: "danger",
@@ -55,54 +55,35 @@ export default function RegisterPage() {
   return (
     <main className="flex h-full items-center justify-center">
       <div className="w-full max-w-md">
-        <h2 className="mb-2 text-center text-3xl font-bold">Register</h2>
+        <h2 className="mb-2 text-center text-3xl font-bold">Reset Password</h2>
         <p className="mb-4 text-center text-sm">
-          Already have an account? <Link href="/auth/login">Login</Link>
+          Remember your password? <Link href="/auth/login">Login</Link>
         </p>
-        <Form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            isClearable
-            name="name"
-            size="lg"
-            variant="bordered"
-            label="Full Name"
-            placeholder="Enter your full name"
-            type="text"
-            required
+        <div className="mx-auto my-3 w-full max-w-xl">
+          <Alert
+            variant="faded"
+            color="warning"
+            description="Password must include at least one lowercase letter, one uppercase letter, one number, and one special character."
           />
+        </div>
+
+        <form onSubmit={handleReset} className="space-y-4">
           <Input
-            isClearable
-            name="username"
-            size="lg"
-            variant="bordered"
-            label="Username"
-            placeholder="Enter your username"
-            type="text"
-            required
-          />
-          <Input
-            isClearable
-            name="email"
-            size="lg"
-            variant="bordered"
-            label="Email"
-            placeholder="Enter your email"
-            type="email"
-            required
-          />
-          <Input
+            isRequired
             name="password"
-            size="lg"
             variant="bordered"
+            size="lg"
             label="Password"
-            placeholder="Enter your password"
+            placeholder="Enter your new password"
             type={isVisible ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             endContent={
               <button
-                aria-label="toggle password visibility"
-                className="focus:outline-none"
+                aria-label="Toggle password visibility"
                 type="button"
                 onClick={toggleVisibility}
+                className="focus:outline-none"
               >
                 {isVisible ? (
                   <RiEyeOffLine className="pointer-events-none text-2xl text-default-400" />
@@ -111,8 +92,8 @@ export default function RegisterPage() {
                 )}
               </button>
             }
-            required
           />
+
           <Turnstile
             sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
             onSuccess={setCaptchaToken}
@@ -122,17 +103,18 @@ export default function RegisterPage() {
             appearance="always"
             className="w-full"
           />
+
           <Button
+            isDisabled={password.length < 6 || !captchaToken}
+            isLoading={loading}
             color="primary"
             size="lg"
             type="submit"
             className="w-full"
-            isLoading={loading}
-            disabled={!captchaToken}
           >
-            Create account
+            Reset Password
           </Button>
-        </Form>
+        </form>
       </div>
     </main>
   );

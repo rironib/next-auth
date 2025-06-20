@@ -84,7 +84,7 @@ export async function sendPasswordResetEmail(email, token) {
       subject: "Reset Your Password",
       html: generateEmailHTML(
         "Reset your password",
-        "You requested a password reset. Click the button below to continue.",
+        "You requested a password reset. Click the button below to continue. This link will expire within 24 hours. And you can not change your password more than once in 30 days.",
         "Reset Password",
         url,
       ),

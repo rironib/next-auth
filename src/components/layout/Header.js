@@ -20,13 +20,9 @@ import {
 
 const Header = () => {
   const { data: session, status } = useSession();
-
   const handleLogout = () => {
     signOut({ callbackUrl: "/auth/login" });
   };
-
-  // console.log(session);
-
   if (status === "loading") {
     return <Loading />;
   }
@@ -34,12 +30,13 @@ const Header = () => {
   return (
     <Navbar maxWidth="full" className="z-50" isBordered>
       <NavbarContent justify="start">
-        <NavbarBrand className="mr-4">
-          <h1
+        <NavbarBrand className="z-50 mr-4">
+          <Link
+            href="/"
             className={`block font-bold text-inherit lg:text-3xl ${atomic_age.className}`}
           >
             Next Auth
-          </h1>
+          </Link>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent justify="center">
@@ -103,22 +100,19 @@ const Header = () => {
             </DropdownMenu>
           </Dropdown>
         ) : (
-          <>
-            <Link
-              href="/auth/login"
-              color="primary"
-              className="rounded border border-primary-500 bg-default-100 px-3 py-1.5"
-            >
+          <div className="flex text-default-500 md:gap-2">
+            <Link href="/auth/login" color="foreground">
               Login
             </Link>
+            <div className="hidden md:block">/</div>
             <Link
               href="/auth/register"
-              color="secondary"
-              className="rounded border border-secondary-500 bg-default-100 px-3 py-1.5"
+              color="foreground"
+              className="hidden md:block"
             >
-              Register
+              Sign up
             </Link>
-          </>
+          </div>
         )}
       </NavbarContent>
     </Navbar>

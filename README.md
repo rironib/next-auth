@@ -53,27 +53,26 @@ src/
 │ │ ├── forgot/page.js # Forgot password UI
 │ │ └── reset/page.js # Reset password UI
 │ ├── dashboard/page.js # Protected route (post-login)
-│ ├── favico.ico
-│ ├── globals.css
-│ ├── layout.js
-│ ├── page.js
-│ └── provider.js
+│ ├── favico.ico # Favicon
+│ ├── globals.css # Global styles
+│ ├── layout.js # Main layout for the app
+│ ├── page.js # Home page
+│ └── provider.js # App Router provider for session management
 ├── components/
 │ ├── layout/
 │ │ └── Header.js # Navbar/Header
 │ ├── AuthProvider.js # NextAuth session provider
-│ ├── Loading.js
-│ └── ThemeSwitcher.js
+│ ├── Loading.js # Loading spinner component
+│ └── ThemeSwitcher.js # Dark mode toggle component
 ├── config/
-│ ├── fonts.js
-│ ├── nextAuth.js # NextAuth config (Google + Credentials)
-│ └── site.js
+│ ├── fonts.js # Font configuration
+│ └── site.js # Site metadata configuration
 ├── lib/
 │ ├── mailer.js # Resend-based email functions
 │ └── mongodb.js # MongoDB connection (native driver)
 ├── middleware.js # Protect routes using NextAuth
-.env.example
-README.md
+.env.example # Example environment variables
+README.md # Project documentation
 
 ```
 

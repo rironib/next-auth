@@ -1,65 +1,65 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Alert, Button, Card, Input } from "@heroui/react";
-import toast from "react-hot-toast";
-import ReCAPTCHA from "react-google-recaptcha";
-
-const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY; // Define this in your .env
+import { Button, Input, Link } from "@heroui/react";
+import Turnstile from "react-turnstile";
+import { useState } from "react";
+import { toast } from "@/components/Toast";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const captchaRef = useRef(null);
+  const [captchaToken, setCaptchaToken] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
-
-    const token = await captchaRef.current?.executeAsync();
-    captchaRef.current?.reset();
-
     try {
       const res = await fetch("/api/forgot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, token }),
+        body: JSON.stringify({ email, captchaToken }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Something went wrong");
-        setLoading(false);
-        return;
+        toast({
+          description:
+            data?.error ||
+            "An error occurred while resetting your password. Please try again.",
+          color: "danger",
+        });
+      } else {
+        router.push("/auth/login");
+        toast({
+          description: "Check your email for reset link",
+          color: "success",
+        });
       }
-
-      toast.success("Check your email for reset link");
-      setLoading(false);
-      setEmail("");
     } catch {
-      setError("Network error. Please try again.");
+      toast({
+        description: "Network error. Please try again.",
+        color: "danger",
+      });
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <main className="flex h-full items-center justify-center">
-      <Card className="w-full max-w-md p-6">
-        <h2 className="mb-4 text-center text-2xl font-bold">Forgot Password</h2>
-
-        {error && (
-          <div className="mx-auto my-3 w-full max-w-xl">
-            <Alert variant="faded" color="danger" description={error} />
-          </div>
-        )}
-
+      <div className="w-full max-w-md">
+        <h2 className="mb-2 text-center text-2xl font-bold">Forgot Password</h2>
+        <p className="mb-4 text-center text-sm">
+          Remember your password? <Link href="/auth/login">Login</Link>
+        </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             isRequired
             isClearable
             name="email"
+            variant="bordered"
             size="lg"
             label="Email"
             placeholder="Enter your email"
@@ -67,18 +67,28 @@ export default function ForgotPasswordPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <ReCAPTCHA sitekey={SITE_KEY} size="invisible" ref={captchaRef} />
+          <Turnstile
+            sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+            onSuccess={setCaptchaToken}
+            onExpire={() => setCaptchaToken("")}
+            size="flexible"
+            theme="auto"
+            appearance="always"
+            className="w-full"
+          />
           <Button
+            isDisabled={!email || !captchaToken}
             isLoading={loading}
             color="primary"
             size="lg"
             type="submit"
             className="w-full"
+            disabled={!captchaToken}
           >
             Send Reset Link
           </Button>
         </form>
-      </Card>
+      </div>
     </main>
   );
 }
