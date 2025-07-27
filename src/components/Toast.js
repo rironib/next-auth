@@ -18,8 +18,6 @@ function title(color) {
 
 export function toast({ description, color }) {
   addToast({
-    // radius: "none",
-    // hideIcon: true,
     title: title(color),
     description,
     variant: "flat",

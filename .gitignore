@@ -42,3 +42,6 @@ next-env.d.ts
 
 # IDE
 /.idea/
+
+# Files
+pnpm-lock.yaml

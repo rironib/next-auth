@@ -1,9 +1,8 @@
 "use client";
 
-import { signOut, useSession } from "next-auth/react";
+import Loading from "@/components/Loading";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { atomic_age } from "@/config/fonts";
-import Loading from "@/components/Loading";
 import {
   Avatar,
   Button,
@@ -17,6 +16,7 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@heroui/react";
+import { signOut, useSession } from "next-auth/react";
 
 const Header = () => {
   const { data: session, status } = useSession();
