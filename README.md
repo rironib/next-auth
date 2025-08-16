@@ -1,94 +1,153 @@
 # 🚀 HeroUI v2.7.8 + TailwindCSS v3.4.17 Template
 
-A modern, fully customizable **HeroUI** template built with [**Next.js 15.3.2**](https://nextjs.org/docs/getting-started) and powered by [**TailwindCSS v3.4.17**](https://v3.tailwindcss.com/). This version uses the **App Router** architecture for better routing flexibility and performance.
+<div align="center">
 
-> 🧰 Uses **PNPM v10.11.0** as the package manager.
+[![GitHub stars](https://img.shields.io/github/stars/rironib/next-auth?style=for-the-badge)](https://github.com/rironib/next-auth/stargazers)
 
----
+[![GitHub forks](https://img.shields.io/github/forks/rironib/next-auth?style=for-the-badge)](https://github.com/rironib/next-auth/network)
 
-## ⚙️ Getting Started
+[![GitHub issues](https://img.shields.io/github/issues/rironib/next-auth?style=for-the-badge)](https://github.com/rironib/next-auth/issues)
 
-Install dependencies and start the development server:
+[![GitHub license](https://img.shields.io/github/license/rironib/next-auth?style=for-the-badge)](LICENSE)
 
-```bash
-pnpm install
-pnpm run dev
+[![Next.js](https://img.shields.io/badge/next.js-v15.3.2-blue.svg)](https://nextjs.org/)
+
+[![NextAuth.js](https://img.shields.io/badge/NextAuth.js-v4.24.11-blue.svg)](https://next-auth.js.org/)
+
+**A starter template for NextAuth.js v4.24.11 with Next.js v15.3.2**
+
+[Live Demo](https://authsix.vercel.app)
+
+</div>
+
+## 📖 Overview
+
+This project provides a ready-to-use starter template for building applications with Next.js v15.3.2 and NextAuth.js v4.24.11.  It streamlines the authentication process, offering a robust and secure foundation for your Next.js projects.  This template is ideal for developers who want a quick start with NextAuth.js and its various authentication providers, without the overhead of setting up a new project from scratch.
+
+## ✨ Features
+
+- **NextAuth.js Integration:**  Seamlessly integrates NextAuth.js for authentication.
+- **Next.js v15.3.2 Compatibility:** Built using the latest version of Next.js.
+- **Environment Variable Configuration:**  Uses a `.env.example` file for managing sensitive information.
+- **Tailwind CSS Styling:**  Includes Tailwind CSS for rapid UI development.
+- **ESLint and Prettier Configuration:** Pre-configured for consistent code style.
+
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+- Next.js v15.3.2
+- React
+- Tailwind CSS
+
+**Backend:**
+- Next.js API Routes (for authentication)
+- NextAuth.js
+
+**Authentication:**
+- NextAuth.js (supports various providers - check `.env.example`)
+
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js (version 16 or higher - check `.env.example` for compatibility information)
+- npm or yarn (pnpm is recommended as specified in `pnpm-workspace.yaml`)
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/rironib/next-auth.git
+   cd next-auth
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables:**
+   ```bash
+   cp .env.example .env
+   # Configure your environment variables in .env (NEXTAUTH_URL, providers, etc.)
+   ```  Refer to the `.env.example` file for details on required variables and their configuration based on the providers you choose to enable.
+
+4. **Start the development server:**
+   ```bash
+   pnpm dev
+   ```
+
+5. **Open your browser:**
+   Visit `http://localhost:3000`
+
+
+## 📁 Project Structure
+
+```
+next-auth/
+├── src/              
+│   └── pages/         # Application pages
+│   └── ...           # other pages
+├── public/            # Static assets (empty in this starter)
+├── .env.example       # Example environment variables
+├── package.json       # Project dependencies
+└── ...                # other config files
 ```
 
-### 📦 Recommended VS Code Extensions
+## ⚙️ Configuration
 
-- [Prettier – Code Formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)  
-- [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)  
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)  
+### Environment Variables
 
----
+The `.env` file contains environment variables crucial for NextAuth.js configuration, including:
 
-## 🚀 Deploying
-
-Build and deploy your project:
-
-```bash
-pnpm build
-pnpm deploy
-```
-
----
-
-## Folder Structure
-
-```
-src/
-├── app/
-│ ├── api/
-│ │ ├── auth/
-│ │ │ └── [...nextauth]/route.js # NextAuth.js handler
-│ │ ├── register/route.js # User registration
-│ │ ├── verify/route.js # Email verification
-│ │ ├── forgot/route.js # Send password reset email
-│ │ ├── reset/route.js # Handle password reset
-│ ├── auth/
-│ │ ├── login/page.js # Login UI
-│ │ ├── register/page.js # Registration UI
-│ │ ├── verify/page.js # UI for token-based verification
-│ │ ├── forgot/page.js # Forgot password UI
-│ │ └── reset/page.js # Reset password UI
-│ ├── dashboard/page.js # Protected route (post-login)
-│ ├── favico.ico # Favicon
-│ ├── globals.css # Global styles
-│ ├── layout.js # Main layout for the app
-│ ├── page.js # Home page
-│ └── provider.js # App Router provider for session management
-├── components/
-│ ├── layout/
-│ │ └── Header.js # Navbar/Header
-│ ├── AuthProvider.js # NextAuth session provider
-│ ├── Loading.js # Loading spinner component
-│ └── ThemeSwitcher.js # Dark mode toggle component
-├── config/
-│ ├── fonts.js # Font configuration
-│ └── site.js # Site metadata configuration
-├── lib/
-│ ├── mailer.js # Resend-based email functions
-│ └── mongodb.js # MongoDB connection (native driver)
-├── middleware.js # Protect routes using NextAuth
-.env.example # Example environment variables
-README.md # Project documentation
-
-```
+- `NEXTAUTH_URL`: The URL of your application.
+- Provider-specific secrets (e.g., `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`).  See the `.env.example` file for a complete list.
 
 
-## 📚 Included Libraries
+### Configuration Files
 
-- 🔗 [Next.js 15.3.2](https://nextjs.org/docs/getting-started) – React framework for production  
-- 🎨 [HeroUI v2.7.8](https://www.heroui.com/docs/guide/introduction) – UI components for TailwindCSS  
-- 💨 [TailwindCSS v3.4.17](https://v3.tailwindcss.com/) – Utility-first CSS framework  
-- 🎥 [Framer Motion](https://www.framer.com/motion/) – Animation library for React  
-- 🌗 [next-themes](https://github.com/pacocoursey/next-themes) – Dark mode support  
-- 🧼 [Prettier](https://prettier.io/) – Code formatting  
-- 🔠 [react-icons](https://react-icons.github.io/react-icons/) – Popular icon sets in React  
+- `.env`:  Contains environment variables.
+- `next.config.mjs`:  Next.js configuration.
+- `tailwind.config.js`:  Tailwind CSS configuration.
+- `postcss.config.js`: PostCSS configuration.
+- `eslint.config.mjs`: ESLint configuration.
+- `jsconfig.json`: TypeScript configuration.
+- `pnpm-workspace.yaml`: Pnpm workspace configuration.
 
----
+
+## 🔧 Development
+
+### Available Scripts
+
+| Command       | Description                                  |
+
+|---------------|----------------------------------------------|
+
+| `pnpm dev`     | Starts the development server                |
+
+| `pnpm build`   | Builds the application for production        |
+
+| `pnpm lint`    | Runs ESLint                                  |
+
+| `pnpm format`  | Formats the code with Prettier              |
+
+
+## 🚀 Deployment
+
+Deploy to Vercel, Netlify, or any platform supporting Next.js deployments.  Remember to set your environment variables in your deployment platform's settings.  The `pnpm build` command will generate the production-ready build artifacts.
+
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for details.
+This project is licensed under the [GNU General Public License v3.0](LICENSE) - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**⭐ Star this repo if you find it helpful!**
+
+</div>
+
